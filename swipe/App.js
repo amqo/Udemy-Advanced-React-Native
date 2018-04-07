@@ -27,6 +27,11 @@ export default class App extends React.Component {
           <Text style={{ marginBottom: 10 }}>
             I can customize the Card further.
           </Text>
+          <Button
+            icon={{ name: 'code' }}
+            backgroundColor="#03A9F4"
+            title="View Now!"
+          />
         </Card>
       );
   }

@@ -6,6 +6,7 @@ class Ball extends Component {
   componentWillMount() {
     this.position = new Animated.ValueXY(0, 0);
     Animated.spring(this.position, {
+      // It's using a default value of 1 second for the animation
       toValue: { x: 200, y: 500 }
     }).start();
   }

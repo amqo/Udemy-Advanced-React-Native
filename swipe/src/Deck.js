@@ -87,14 +87,18 @@ class Deck extends Component {
         return (
           <Animated.View
             key={item.id}
-            style={this.getCardStyle()}
+            style={[this.getCardStyle(), styles.cardStyle, { zIndex: index * -1 }]}
             {...this.state.panResponder.panHandlers}
           >
             {this.props.renderCard(item)}
           </Animated.View>
         );
       }
-      return this.props.renderCard(item);
+      return (
+        <View key={item.id} style={[styles.cardStyle, { zIndex: index * -1 }]}>
+          {this.props.renderCard(item)}
+        </View>
+      );
     });
   }
 
@@ -106,5 +110,12 @@ class Deck extends Component {
     );
   }
 }
+
+const styles = {
+  cardStyle: {
+    position: 'absolute',
+    width: SCREEN_WIDTH
+  }
+};
 
 export default Deck;

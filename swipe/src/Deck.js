@@ -95,9 +95,16 @@ class Deck extends Component {
         );
       }
       return (
-        <View key={item.id} style={[styles.cardStyle, { zIndex: index * -1 }]}>
+        <Animated.View
+          key={item.id}
+          style={[
+            styles.cardStyle,
+            { zIndex: index * -1 }, 
+            { top: 10 * (index - this.state.index) }
+          ]}
+        >
           {this.props.renderCard(item)}
-        </View>
+        </Animated.View>
       );
     });
   }

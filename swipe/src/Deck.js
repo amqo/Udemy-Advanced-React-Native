@@ -1,11 +1,14 @@
 import React, { Component } from 'react';
 import {
-  View, Animated, PanResponder, Dimensions, LayoutAnimation, UIManager
+  View, Animated, PanResponder, Dimensions
+  //LayoutAnimation, UIManager
 } from 'react-native';
 
 const SCREEN_WIDTH = Dimensions.get('window').width;
 const SWIPE_THRESHOLD = SCREEN_WIDTH * 0.5;
 const SWIPE_OUT_DURATION = 250;
+const ANIMATION_RECOVER_DURATION = 250;
+const CASCADE_SEPARATION_TOP = 10;
 
 class Deck extends Component {
 
@@ -18,6 +21,8 @@ class Deck extends Component {
     super(props);
 
     const position = new Animated.ValueXY();
+    const positionRecover = new Animated.ValueXY();
+
     const panResponder = PanResponder.create({
       onStartShouldSetPanResponder: () => true,
       onPanResponderMove: (event, gesture) => {
@@ -34,18 +39,24 @@ class Deck extends Component {
       }
     });
 
-    this.state = { panResponder, position, index: 0 };
+    this.state = { panResponder, position, positionRecover, index: 0 };
   }
 
-  componentWillUpdate() {
-    UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
-    LayoutAnimation.spring();
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.data !== this.props.data) {
+      this.setState({ index: 0 });
+    }
   }
+
+// There is a problem in Android with LayoutAnimation and Animation modules conflicting
+  //componentWillUpdate() {
+  //  UIManager.setLayoutAnimationEnabledExperimental && UIManager.setLayoutAnimationEnabledExperimental(true);
+  //  LayoutAnimation.spring();
+  //}
 
   forceSwipe(direction) {
     const x = direction === 'right' ? SCREEN_WIDTH : -SCREEN_WIDTH;
     Animated.timing(this.state.position, {
-      // It's using a default value of 1 second for the animation
       toValue: { x, y: 0 },
       duration: SWIPE_OUT_DURATION
     }).start(() => this.onSwipeComplete(direction));
@@ -56,8 +67,14 @@ class Deck extends Component {
     const item = data[this.state.index];
 
     direction === 'right' ? onSwipeRight(item) : onSwipeLeft(item);
-    this.state.position.setValue({ x: 0, y: 0 });
-    this.setState({ index: this.state.index + 1 });
+    Animated.timing(this.state.positionRecover, {
+      toValue: { x: 0, y: -CASCADE_SEPARATION_TOP },
+      duration: ANIMATION_RECOVER_DURATION
+    }).start(() => {
+      this.state.position.setValue({ x: 0, y: 0 });
+      this.state.positionRecover.setValue({ x: 0, y: 0 });
+      this.setState({ index: this.state.index + 1 });
+    });
   }
 
   resetPosition() {
@@ -105,7 +122,7 @@ class Deck extends Component {
           style={[
             styles.cardStyle,
             { zIndex: index * -1 },
-            { top: 10 * (index - this.state.index) }
+            { top: CASCADE_SEPARATION_TOP * (index - this.state.index) }
           ]}
         >
           {this.props.renderCard(item)}
@@ -116,9 +133,9 @@ class Deck extends Component {
 
   render() {
     return (
-      <View>
+      <Animated.View style={this.state.positionRecover.getLayout()}>
         {this.renderCards()}
-      </View>
+      </Animated.View>
     );
   }
 }

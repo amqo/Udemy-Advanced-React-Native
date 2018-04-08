@@ -39,9 +39,18 @@ export default class App extends React.Component {
 
   renderNoMoreCards() {
     return (
-      <Text key={DATA.length}>
-        No more cards
-      </Text>
+      <Card title="All Done!">
+        <Text
+          key="{DATA.length}"
+          style={{ marginBottom: 10 }}
+        >
+          There's no more content here!
+        </Text>
+        <Button
+          title="Get more!"
+          backgroundColor="#03A9F4"
+        />
+      </Card>
     );
   }
 

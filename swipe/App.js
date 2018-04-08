@@ -37,12 +37,21 @@ export default class App extends React.Component {
       );
   }
 
+  renderNoMoreCards() {
+    return (
+      <Text key={DATA.length}>
+        No more cards
+      </Text>
+    );
+  }
+
   render() {
     return (
       <View style={styles.container}>
         <Deck
           data={DATA}
           renderCard={this.renderCard}
+          renderNoMoreCards={this.renderNoMoreCards}
         />
       </View>
     );
@@ -52,6 +61,7 @@ export default class App extends React.Component {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff'
+    backgroundColor: '#fff',
+    paddingTop: 30
   }
 });

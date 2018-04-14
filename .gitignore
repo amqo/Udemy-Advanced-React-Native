@@ -1,3 +1,4 @@
 one-time-password/functions/node_modules/
 one-time-password/functions/service_account.json
 one-time-password/functions/twilio_account.json
+firebase-auth/firebase_account.json

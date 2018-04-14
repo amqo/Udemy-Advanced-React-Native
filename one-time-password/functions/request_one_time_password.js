@@ -11,7 +11,7 @@ module.exports = function(req, res) {
   // Format the phone number to remove dashes and parens
   const phone = String(req.body.phone).replace(/[^\d]/g, '');
 
-  admin.auth().getUser(phone)
+  return admin.auth().getUser(phone)
     .then(userRecord => {
       const code = Math.floor(Math.random() * 8999 + 1000);
       return twilio.messages.create({
@@ -22,7 +22,7 @@ module.exports = function(req, res) {
         if (error) { return res.status(422).send({ error }); }
 
         // Create a record in Firebase Database
-        admin.database().ref('users/' + phone)
+        return admin.database().ref('users/' + phone)
           .update({ code: code, codeValid: true }, () => {
             res.send({ success: true });
           });

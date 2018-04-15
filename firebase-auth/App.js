@@ -7,6 +7,7 @@ import SignInForm from './components/SignInForm';
 import firebaseAccount from './firebase_account.json'
 
 export default class App extends React.Component {
+
   componentDidMount() {
     const config = {
       apiKey: firebaseAccount.apiKey,
